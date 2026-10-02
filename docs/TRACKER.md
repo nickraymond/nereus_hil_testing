@@ -43,12 +43,12 @@ runs/     one folder per run: <test>_<YYYYMMDD>/ with RESULTS.md + run_manifest.
 
 State key: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked
 
-### S0 — Port the R1 `hil/` format  `[ ]`
+### S0 — Port the R1 `hil/` format  `[~]`  (demo pending: Nick)
 **Goal:** this repo holds the Test Engineer's `hil/` as a copy, with only the DESIGN
 differences #1, #2, #5–#8 applied.
-- [ ] `git -C ../bm_cam_legacy fetch`; copy `hil/` from the agreed sha; record the sha in DEV_LOG
-- [ ] apply differences #1, #2 (`.gitignore`), #5 (`HIL_PRODUCT_REPO`), #6, #7, #8 (item 7 into `hil/README.md` §1); nothing else
-- [ ] remove the "until the port" pointer text from DESIGN.md
+- [x] `git -C ../bm_cam_legacy fetch`; copy `hil/` from the agreed sha (7a867d9); record the sha in DEV_LOG
+- [x] apply differences #1, #2 (`.gitignore`), #5 (`HIL_PRODUCT_REPO`), #6, #7, #8 (item 7 into `hil/README.md` §1); nothing else
+- [x] remove the "until the port" pointer text from DESIGN.md
 **Demo (Nick):** `hil/tools/hil_new_run.sh demo_port DEMO` → prints `runs/demo_port_<date>/`;
 that folder has RESULTS.md, run_manifest.json (valid JSON, schema `hil_run_manifest/1`),
 commands.log, gate.log and the five subfolders. Desk-only: no unit is contacted.

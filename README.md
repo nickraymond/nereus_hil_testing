@@ -21,13 +21,14 @@ Prompt: `docs/PROMPTS.md` §5.
 ## Run a test
 
 ```bash
+cp hil/hil.env.example hil/hil.env   # once; edit hosts/paths if needed (no tokens)
 source hil/hil.env
 export HIL_RUN_DIR=$(hil/tools/hil_new_run.sh <test> <TEST_ID> <unit> ...)
 ```
 
 Then follow the spec's steps; fill `$HIL_RUN_DIR/RESULTS.md` (one verdict per criterion,
 each citing a file in the run folder) and add a line to the run index in `docs/DESIGN.md`.
-(The tools arrive with the R1 port, TRACKER S0.)
+Tools and what they do: `hil/README.md` §8.
 
 ## Working here with an agent
 

@@ -24,7 +24,7 @@ imports product code; a test names the product sha it runs against (HIL-ready it
 ```text
 CLAUDE.md, README.md, docs/      process docs (SPEC / TRACKER / DESIGN / DEV_LOG / PROMPTS)
 .claude/skills/                  agent-entry, capture-task (repo-local; never copy to ~/.claude)
-hil/                             the HIL format, copied from the Test Engineer's hil/ unchanged
+hil/                             the HIL format, copied from the Test Engineer's hil/ @ 7a867d9 + differences below
   README.md                      the format (HIL-ready, criteria table, run folder, RESULTS, bench rules)
   hil.env.example                hosts / ids the tools read; hil.env is gitignored
   gates/                         one file per release gate (criteria table, steps, restore)
@@ -50,9 +50,8 @@ Where each thing goes:
 | results | `runs/<test>_<YYYYMMDD>/RESULTS.md` | operator |
 | run index | §Run index below, one line per run | operator, at run end |
 
-Until the port (TRACKER S0), the format's source of truth is
-`bm_cam_legacy` `origin/feature/r1-hil-test-engineer:hil/README.md` (ec2a449). `hil/README.md`
-here is a pointer only.
+The format's source of truth is `hil/README.md` here (ported 2026-10-02 from bm_cam_legacy
+7a867d9, D10). Changes to it are made here, by PR.
 
 ### HIL-ready checklist (handover contract)
 
@@ -72,7 +71,7 @@ Engineer's `hil/README.md` §1, unchanged; 7 is ours (D8), added to `hil/README.
 Missing a row → sent back with the missing row named. Verdicts: `PASS`, `FAIL`, `BLOCKED`
 (why), `N/A` (reason). A test PASSes only when every row is PASS or an agreed N/A.
 
-### Differences from the Test Engineer's `hil/` (ec2a449) and what to do
+### Differences from the Test Engineer's `hil/` (found at ec2a449; applied at the port from 7a867d9)
 
 | # | difference | recommendation |
 |---|---|---|
@@ -82,8 +81,9 @@ Missing a row → sent back with the missing row named. Verdicts: `PASS`, `FAIL`
 | 4 | Gate files are not release-scoped (`G3_api_hard_mode.md`) | **decided (D7):** copy flat for R1; from R2 on name gates `R2_G1_<slug>.md` so `hil/gates/` stays flat and the RESULTS template glob still works |
 | 5 | Tools are bmcam-specific and read product-repo files (`docs/bmcam_config_catalog.json`, `tools/rc_field_update.sh`) by relative path | keep flat for now (one product); add `HIL_PRODUCT_REPO` to `hil.env` and pass `--catalog $HIL_PRODUCT_REPO/...`; split `hil/tools/<product>/` only when a second product arrives |
 | 6 | Bench rules (§6) cite bm_cam_legacy CLAUDE.md §15/16 (field-ops) | the rules are copied into SPEC §Hard constraints here, so the citation resolves in this repo |
-| 7 | `steps.log` is written by `hil_cmd.sh` / `hil_pistate.sh` but missing from README §3; `hil_p0_probe.sh` cites `hil/procedures/P0_rpicam_probe.md`, which does not exist | fix on port (README line + header line); not worth interrupting the Test Engineer during R1 |
+| 7 | `steps.log` is written by `hil_cmd.sh` / `hil_pistate.sh` but missing from README §3; `hil_p0_probe.sh` cites `hil/procedures/P0_rpicam_probe.md`, which does not exist | applied at the port; README §8 also gained rows for `hil_step.sh` / `hil_change.sh` (added after ec2a449) |
 | 8 | No item saying a test must run without an agent | **decided (D8):** HIL-ready item 7, added to `hil/README.md` §1 at the port |
+| 9 | `hil/hil.env` is committed in bm_cam_legacy (974c865) although `hil/.gitignore` excludes it; hosts/ids only, no secrets | not copied here (gitignored); tell the Test Engineer after R1, via the EM |
 
 ## Decision log
 
@@ -98,6 +98,7 @@ Missing a row → sent back with the missing row named. Verdicts: `PASS`, `FAIL`
 | D7 | 2026-10-02 | From R2 on, gates are `hil/gates/R<n>_G<m>_<slug>.md` (flat); R1 files keep their names | Nick, Q2: no template change, no file moves at the port |
 | D8 | 2026-10-02 | Adopt HIL-ready item 7 "operator-runnable" (D4 proposal) | Nick, Q3: tests must be runnable by Nick without Claude Code |
 | D9 | 2026-10-02 | After R1 a standing Test Engineer session owns the bench; Nick approves and can take the bench back at any time | Nick, Q4 |
+| D10 | 2026-10-02 | Port = `git archive 7a867d9 hil` (commit A, byte-checked) then only differences #1, #2, #5–#8 (commit B); no tool code changed except one header comment | Test Engineer reported `hil/` stable @ 7a867d9 (EM relay); two commits keep the copy reviewable against its source |
 
 ## Run index
 
