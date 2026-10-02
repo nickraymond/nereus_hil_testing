@@ -1,7 +1,7 @@
 # DESIGN.md — Architecture & Decisions (as-built)
 
 *What it did / how it's shaped. Agents append; never silently rewrite history.*
-*Last updated: 2026-10-01*
+*Last updated: 2026-10-02*
 
 ## System topology
 
@@ -57,7 +57,7 @@ here is a pointer only.
 ### HIL-ready checklist (handover contract)
 
 A session hands a test over when the spec has all of these. Items 1–6 are the Test
-Engineer's `hil/README.md` §1, unchanged; 7 is proposed (D4).
+Engineer's `hil/README.md` §1, unchanged; 7 is ours (D8), added to `hil/README.md` §1 at the port.
 
 | # | item | must contain |
 |---|---|---|
@@ -79,11 +79,11 @@ Missing a row → sent back with the missing row named. Verdicts: `PASS`, `FAIL`
 | 1 | `hil/README.md` calls the target repo `nereus_HIL_tooling` | one-line rename on port |
 | 2 | Evidence lives in the product repo `runs/`, where `*.log` / `*.csv` are gitignored (force-add) | here: logs and CSV are tracked (no `-f`); video (`*.mp4 *.h264`) ignored; full-size media stays off git, sha256 in the manifest. R1 runs stay in bm_cam_legacy; do not move them |
 | 3 | No home for a non-gate test a dev session hands over (its README §1 example lives in the product repo `sprints/`) | add `hil/tests/` (D3); gates stay in `hil/gates/` |
-| 4 | Gate files are not release-scoped (`G3_api_hard_mode.md`) | copy flat for R1; from R2 on name gates `R2_G1_<slug>.md` so `hil/gates/` stays flat and the RESULTS template glob still works |
+| 4 | Gate files are not release-scoped (`G3_api_hard_mode.md`) | **decided (D7):** copy flat for R1; from R2 on name gates `R2_G1_<slug>.md` so `hil/gates/` stays flat and the RESULTS template glob still works |
 | 5 | Tools are bmcam-specific and read product-repo files (`docs/bmcam_config_catalog.json`, `tools/rc_field_update.sh`) by relative path | keep flat for now (one product); add `HIL_PRODUCT_REPO` to `hil.env` and pass `--catalog $HIL_PRODUCT_REPO/...`; split `hil/tools/<product>/` only when a second product arrives |
 | 6 | Bench rules (§6) cite bm_cam_legacy CLAUDE.md §15/16 (field-ops) | the rules are copied into SPEC §Hard constraints here, so the citation resolves in this repo |
 | 7 | `steps.log` is written by `hil_cmd.sh` / `hil_pistate.sh` but missing from README §3; `hil_p0_probe.sh` cites `hil/procedures/P0_rpicam_probe.md`, which does not exist | fix on port (README line + header line); not worth interrupting the Test Engineer during R1 |
-| 8 | No item saying a test must run without an agent | add HIL-ready item 7 (D4) |
+| 8 | No item saying a test must run without an agent | **decided (D8):** HIL-ready item 7, added to `hil/README.md` §1 at the port |
 
 ## Decision log
 
@@ -94,6 +94,10 @@ Missing a row → sent back with the missing row named. Verdicts: `PASS`, `FAIL`
 | D3 | 2026-10-01 | Handed-over non-gate tests go in `hil/tests/` | gives dev sessions one place to land a HIL-ready spec; additive, no existing path changes |
 | D4 | 2026-10-01 | HIL-ready item 7 "operator-runnable" (proposed) | goal: Nick can run tests without Claude Code; to raise with the Test Engineer after R1 |
 | D5 | 2026-10-01 | One home per rule: process in TRACKER, bench rules in SPEC, test format in `hil/README.md`; results only in `runs/*/RESULTS.md` | the template README and DESIGN "Bench / test results" duplicated them |
+| D6 | 2026-10-02 | Port (S0) when the Test Engineer reports `hil/` stable, via the EM, even before 10/09 (supersedes D2's "after R1 ships") | Nick, Q1: get the tools here as soon as they stop changing; still one copy, no re-sync |
+| D7 | 2026-10-02 | From R2 on, gates are `hil/gates/R<n>_G<m>_<slug>.md` (flat); R1 files keep their names | Nick, Q2: no template change, no file moves at the port |
+| D8 | 2026-10-02 | Adopt HIL-ready item 7 "operator-runnable" (D4 proposal) | Nick, Q3: tests must be runnable by Nick without Claude Code |
+| D9 | 2026-10-02 | After R1 a standing Test Engineer session owns the bench; Nick approves and can take the bench back at any time | Nick, Q4 |
 
 ## Run index
 

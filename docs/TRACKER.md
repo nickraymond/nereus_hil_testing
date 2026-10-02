@@ -1,7 +1,7 @@
 # TRACKER.md — Sprint Ladder & Rules
 
 *The agent entry point. Newest state lives here.*
-*Last updated: 2026-10-01 · Owner/gate: **Nick***
+*Last updated: 2026-10-02 · Owner/gate: **Nick***
 
 ---
 
@@ -45,14 +45,14 @@ State key: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked
 
 ### S0 — Port the R1 `hil/` format  `[ ]`
 **Goal:** this repo holds the Test Engineer's `hil/` as a copy, with only the DESIGN
-differences #1, #2, #5–#7 applied.
+differences #1, #2, #5–#8 applied.
 - [ ] `git -C ../bm_cam_legacy fetch`; copy `hil/` from the agreed sha; record the sha in DEV_LOG
-- [ ] apply differences #1, #2 (`.gitignore`), #5 (`HIL_PRODUCT_REPO`), #6, #7; nothing else
+- [ ] apply differences #1, #2 (`.gitignore`), #5 (`HIL_PRODUCT_REPO`), #6, #7, #8 (item 7 into `hil/README.md` §1); nothing else
 - [ ] remove the "until the port" pointer text from DESIGN.md
 **Demo (Nick):** `hil/tools/hil_new_run.sh demo_port DEMO` → prints `runs/demo_port_<date>/`;
 that folder has RESULTS.md, run_manifest.json (valid JSON, schema `hil_run_manifest/1`),
 commands.log, gate.log and the five subfolders. Desk-only: no unit is contacted.
-**Needs:** R1 shipped (2026-10-09) or the Test Engineer's OK (SPEC Q1).
+**Needs:** the Test Engineer reports `hil/` stable, relayed by the EM (DESIGN D6). Do not ask the TE directly during R1.
 
 ### S1 — First handed-over test, run by Nick alone  `[ ]`
 **Goal:** one non-gate test lands in `hil/tests/` HIL-ready (all 7 items) and Nick runs it.
@@ -60,7 +60,7 @@ commands.log, gate.log and the five subfolders. Desk-only: no unit is contacted.
 - [ ] spec passes the HIL-ready checklist review (missing rows named, then fixed)
 **Demo (Nick):** Nick runs the test from its spec with no agent in the loop; the run folder's
 RESULTS.md has a verdict per criterion and every evidence file it names exists.
-**Needs:** S0; a free bench window from the bench owner.
+**Needs:** S0; a bench window from the bench owner (standing Test Engineer session, D9).
 
 ---
 

@@ -17,6 +17,18 @@ what broke, what's next.*
 
 ---
 
+## 2026-10-02 — Pre-work — SPEC Q1–Q4 answered by Nick
+
+**Branch:** sprint/0-open-questions
+**Done:** recorded Nick's answers as DESIGN D6–D9: port when the TE reports `hil/` stable
+(via the EM); R2+ gates `R<n>_G<m>_<slug>.md` flat; HIL-ready item 7 adopted; a standing
+Test Engineer session owns the bench after R1. SPEC constraints 1–2 and TRACKER S0/S1
+updated. Desk work only.
+**Broke/surprised us:** nothing.
+**Next:** S0 plan nibble when the EM relays the TE's "hil/ stable" — Nick gate.
+
+---
+
 ## 2026-10-01 — Pre-work — Templates cleaned up for HIL; layout + HIL-ready checklist proposed
 
 **Branch:** sprint/0-repo-setup (initial commit on main = templates verbatim, Nick-approved)
