@@ -1,0 +1,6 @@
+.DS_Store
+.claude/worktrees/
+hil/hil.env
+# video stays off git: keep sidecar + thumbnail, record path + sha256 in run_manifest.json
+*.mp4
+*.h264
