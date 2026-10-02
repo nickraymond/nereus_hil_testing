@@ -1,40 +1,69 @@
-# SPEC.md — {{PROJECT}}
+# SPEC.md — nereus_hil_testing
 
-*What {{OWNER}} wants. Stable reference — agents skim this; changes require {{OWNER}}'s approval.*
-*Last updated: {{DATE}}*
+*What Nick wants. Stable reference — agents skim this; changes require Nick's approval.*
+*Last updated: 2026-10-01*
 
 ## Goal
 
-<One paragraph. What exists when this project is done, phrased as the end-state
-demo {{OWNER}} can run.>
+One home for Nereus hardware-in-the-loop (HIL) testing, in one format for every project.
+Done when Nick can take any HIL-ready test from this repo, run it on the bench from the
+copy-pastable commands alone (no Claude Code session needed), and get a run folder whose
+`RESULTS.md` says PASS or FAIL per criterion with the evidence file next to it.
 
 ## Background
 
-<Why this project; what already works; what this replaces.>
+- Release R1 (ship Fri 2026-10-09) has a Test Engineer session in `bm_cam_legacy` that built
+  a self-contained `hil/` folder (format README, gates, procedures, tools, templates) meant to
+  be copied here. Source: bm_cam_legacy `origin/feature/r1-hil-test-engineer` @ ec2a449.
+- Conventions reused from bm_cam_legacy: "trust artifacts, not exit codes"; self-contained run
+  folders with `run_manifest.json` + `RESULTS.md` (CLAUDE.md §10); field-ops and reversible
+  changes (CLAUDE.md §15/16); the SPEC / DESIGN / TRACKER / DEV_LOG pattern
+  (`sprints/cc_prompts/CC_PROMPT_sprint_worker.md`); one PASS/FAIL row per criterion (`runs/*/RESULTS.md`).
+- Process docs come from `template_LLM_project` (Nick's agent-process template).
 
 ## Inventory / environment
 
+Source: bm_cam_legacy `hil/hil.env.example` and `hil/README.md` §6 @ ec2a449. Verify before use.
+
 | Item | Qty | Role |
 |---|---|---|
-| | | |
-
-## Confirmed facts (verified, with sources)
-
-<Only facts checked against primary sources. Everything else goes in Open
-questions. Cite the source next to each fact.>
+| nereus000 (`pi@192.168.1.45`) | 1 | console monitor host (spotter-monitor, `cmd.txt` lane); holds the staging admin token |
+| Bench rig A: SPOT-33507C / BMCAM_003 / bmcam003 | 1 | R1 primary bench unit |
+| Bench rig B: SPOT-31593C / BMCAM_004 / bmcam004 | 1 | R1 second bench unit |
+| Field units: SPOT-33361C, bmcam001, bmcam002 | 3 | **never** a HIL target (constraint 3) |
+| Staging API `https://nereus-vision-staging.onrender.com` | 1 | used from nereus000 only |
 
 ## Safety / hard constraints (non-negotiable)
 
-1.
+1. **Desk sessions never touch hardware.** Only the session named bench owner (or Nick)
+   runs anything against nereus000, a Spotter or a unit. Everyone else asks the owner first.
+2. **One bench owner at a time**, recorded in the run's `gate.log`.
+3. **Never send to a field Spotter or unit** (SPOT-33361C, bmcam001, bmcam002) from a HIL session.
+4. **Field-ops (from bm_cam_legacy CLAUDE.md §15/16):** check for running camera processes;
+   back up crontab and config before any change and restore them after; write the restore
+   command before running the change; never leave a unit disabled, disarmed or mid-surgery;
+   avoid reboot loops; prefer reversible changes; record every boot / cron / config change in `gate.log`.
+5. **No secrets in git.** Tokens stay on the monitor host; `hil/hil.env` is gitignored.
+6. **Nick decides first** (via the EM during a release): cellular spend beyond a test's
+   budget, anything Nick must physically touch, any Render / backend change.
+7. **Evidence is files, not exit codes.** A criterion's verdict cites a file in its run folder.
+
+Test-format bench rules (console line limits, heal sender, ssh/IPC gotchas) live in
+`hil/README.md` §6.
 
 ## Success criteria by sprint
 
-See TRACKER.md — every sprint ends with a live demo {{OWNER}} can run.
+See TRACKER.md — every sprint ends with a live demo Nick can run.
 
 ## Non-goals (this project)
 
--
+- Product code. Code under test lives in its product repo; tests reference a sha.
+- Moving past run evidence (R1 runs stay in bm_cam_legacy `runs/`).
+- CI or automated scheduling of bench runs (later, if ever).
 
 ## Open questions (flag, don't guess)
 
--
+- Q1. Port timing: after R1 ships (2026-10-09), or earlier if the Test Engineer calls `hil/` stable? (DESIGN D2)
+- Q2. Gate naming from R2 on: `R2_G1_<slug>.md` flat (recommended), or a release subfolder? (DESIGN differences #4)
+- Q3. HIL-ready item 7 "operator-runnable": adopt? (DESIGN D4)
+- Q4. Who is bench owner after R1: a standing Test Engineer session, or Nick by default?

@@ -1,57 +1,35 @@
-# Agent Process Template
+# nereus_hil_testing
 
-Sofar-style agent discipline, parameterized. This folder mirrors a real repo's
-layout exactly — starting a new project is copy-and-fill.
+Nereus hardware-in-the-loop (HIL) testing: one format for every project's bench tests,
+so a test written by any session can be run by Nick (or the bench owner) from its
+commands alone, and leaves a run folder that proves PASS or FAIL per criterion.
 
-```
-SPEC.md      ─┐  what OWNER wants      ┌─ DESIGN.md    ─┐
-TRACKER.md   ─┴──► code generation ────┤                ├─ what it did
-                        │              └─ DEV_LOG.md   ─┘
-                        ▼
-                    the thing
-```
-
-## Contents (mirrors repo root)
-
-```
-CLAUDE.md                      always-loaded router + engineering values
-.claude/skills/agent-entry/    session-start ritual  → /agent-entry
-.claude/skills/capture-task/   tracker capture       → /capture-task
-docs/SPEC.md                   goal, verified facts, constraints, open questions
-docs/TRACKER.md                rules + sprint ladder (the agent entry point)
-docs/DESIGN.md                 as-built architecture + decision log
-docs/DEV_LOG.md                session log, newest first
-docs/PROMPTS.md                owner's kickoff prompts (verbatim, fill <N>/<slug>)
+```text
+docs/       SPEC (goal, bench inventory, hard constraints) · TRACKER (rules + sprints) ·
+            DESIGN (layout, HIL-ready checklist, decisions, run index) · DEV_LOG · PROMPTS
+hil/        the HIL format (README), gates/, tests/, procedures/, tools/, templates/
+runs/       runs/<test>_<YYYYMMDD>/ — RESULTS.md + run_manifest.json + evidence
+.claude/    repo-local skills: /agent-entry, /capture-task
 ```
 
-## Starting a new project
+## Hand a test over
 
-1. Copy everything in this folder into the new repo root (including the hidden
-   `.claude/` directory — check it survived the copy).
-2. Find-and-replace across all files: `{{OWNER}}` → your name,
-   `{{PROJECT}}` → project name, `{{DATE}}` → today.
-3. Fill `docs/SPEC.md` (goal, verified facts, non-goals) and the TRACKER.md
-   sprint ladder. DESIGN.md / DEV_LOG.md start near-empty — agents fill them.
-4. Add project code dirs; update the layout lines in CLAUDE.md and TRACKER.md.
-5. First session: paste the "New sprint" prompt from docs/PROMPTS.md.
+Write `hil/tests/<test>.md` so it meets the HIL-ready checklist (`docs/DESIGN.md`):
+spec, code ref, criteria table, inputs, restore, budget, operator-runnable.
+Prompt: `docs/PROMPTS.md` §5.
 
-## Division of labor (why each file exists)
+## Run a test
 
-- **CLAUDE.md** — loaded every session, kept short: points at the ritual,
-  carries only timeless engineering values. One home per rule; no duplicates.
-- **Skills** — procedures, loaded on demand. Repo-local so the repo controls
-  them. Do NOT copy these into `~/.claude/skills/` — a same-named personal
-  skill silently overrides every repo's version.
-- **docs/** — all project state. Prompts stay constant; requirements go in
-  SPEC/TRACKER, never in chat.
+```bash
+source hil/hil.env
+export HIL_RUN_DIR=$(hil/tools/hil_new_run.sh <test> <TEST_ID> <unit> ...)
+```
 
-## The rules (summary — full text in docs/TRACKER.md)
+Then follow the spec's steps; fill `$HIL_RUN_DIR/RESULTS.md` (one verdict per criterion,
+each citing a file in the run folder) and add a line to the run index in `docs/DESIGN.md`.
+(The tools arrive with the R1 port, TRACKER S0.)
 
-- TRACKER cover-to-cover every session; skim SPEC + DESIGN; top 3 DEV_LOG entries
-- Bites ~300 LoC, one TODO at a time
-- Four nibbles: plan (OWNER gate) → code+tests → manual tests (OWNER runs,
-  copy-pastable CLI) → PR
-- Feature branch for ALL new work (`sprint/<n>-<slug>`); never commit to main
-- Every sprint ends with a live demo OWNER can run
-- DEV_LOG entry every session; DESIGN updated on any decision
-- Facts carry sources; unknowns get flagged, not guessed
+## Working here with an agent
+
+Start every session with `/agent-entry` (or the Rules for Agents in `docs/TRACKER.md`).
+Process docs come from Nick's `template_LLM_project`.
