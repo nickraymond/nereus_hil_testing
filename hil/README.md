@@ -1,8 +1,8 @@
 # HIL — hardware-in-the-loop test format (Release R1 onward)
 
 Owner: the Test Engineer session (Nick approved the role 2026-10-01). This folder holds
-everything self-contained, so it can be copied as-is into the future `nereus_HIL_tooling`
-repo. Nothing here imports from `BM_Devel_Pi/`: device-side code runs on the unit
+everything self-contained; it was copied as-is into `nereus_hil_testing` (from bm_cam_legacy
+7a867d9; changes since: that repo's docs/DESIGN.md differences table). Nothing here imports from `BM_Devel_Pi/`: device-side code runs on the unit
 over ssh/CLI.
 
 ```text
@@ -22,7 +22,7 @@ convention), so this folder stays code + specs only.
 
 ## 1. What a test needs to run here
 
-A dev session hands the Test Engineer a test. It is **HIL-ready** when it has all six:
+A dev session hands the Test Engineer a test. It is **HIL-ready** when it has all seven:
 
 | # | item | what it is | example |
 |---|---|---|---|
@@ -32,8 +32,9 @@ A dev session hands the Test Engineer a test. It is **HIL-ready** when it has al
 | 4 | **Inputs** | every command / config / file it sends, written out (JSON lines, kv, files), with the lane (console or Sofar) | `{"id":51001,"c":"ping"}` console lane |
 | 5 | **Restore** | how the unit goes back to its pre-test state, and how that is checked (config hash, crontab, bus setting) | `reset` keys → `get` hash == baseline |
 | 6 | **Budget** | wall time, cellular messages, Nick's hands (box, power, Render) | ~1 h, 0 cellular, none |
+| 7 | **Operator-runnable** | every step is a copy-pastable command or a named `hil/tools/` script; Nick can run it with no agent in the loop | `hil/tools/hil_cmd.sh L1.ping '{"id":51001,"c":"ping"}' 8 SPOT-33507C` |
 
-Missing any of the six = the Test Engineer sends it back with the missing row named.
+Missing any of the seven = the Test Engineer sends it back with the missing row named.
 
 ## 2. Criteria table (the gate contract)
 
@@ -64,6 +65,7 @@ runs/g3_hardmode_20261003/
                       hashes before/after, tools used (path + sha256), env (no secrets)
   commands.log        every console / API command sent, with UTC time and step tag (append-only)
   gate.log            operator timeline: what was done, when, the decision at each step
+  steps.log           per-step answers + state hashes (hil_cmd.sh, hil_pistate.sh, hil_step.sh, hil_change.sh)
   snapshots/          hil_unit_snapshot.sh output per unit (before/after), one file each
   console/            console excerpts pulled from the monitor
   api/                raw API responses (JSON), one file per call
@@ -71,7 +73,7 @@ runs/g3_hardmode_20261003/
   analysis/           CSV / JSON derived from the raw files, plus the script that made them
 ```
 
-`*.log` and `*.csv` are gitignored in this repo: **force-add them** (`git add -f runs/<run>/`).
+`*.log` and `*.csv` are tracked here (no `git add -f` needed); `*.mp4` / `*.h264` are gitignored.
 Large media stay off git: keep the sidecar + a small poster/thumbnail, and record the full
 file's path and sha256 in `run_manifest.json`.
 
@@ -97,7 +99,7 @@ Secrets never go in it (tokens stay on nereus000 in `~/.config/nereus/*.env`).
 
 - **One bench owner.** Only the owner touches nereus000, the bench Spotters and the bench
   units. Others ask the owner first.
-- **Field-ops (CLAUDE.md §15/16):** back up crontab and config before any change, write the
+- **Field-ops (docs/SPEC.md §Safety 4, from bm_cam_legacy CLAUDE.md §15/16):** back up crontab and config before any change, write the
   restore command before running the change, never leave a unit disarmed or mid-surgery,
   prefer reversible changes. Record every host/boot/cron change in `gate.log`.
 - **Console sends** go through the monitor host's `cmd.txt` (`hil_console.sh`), ≤ 256 B per
@@ -118,6 +120,8 @@ Secrets never go in it (tokens stay on nereus000 in `~/.config/nereus/*.env`).
 Tools read their targets from arguments, or from env vars that `hil/hil.env` sets
 (`source hil/hil.env`). See `hil.env.example`. Tokens are never read on the Mac: tools
 that need the staging admin token run ON the monitor host and read its env file there.
+Tools that read product-repo files (e.g. `docs/bmcam_config_catalog.json`) take the path as
+an argument: pass `$HIL_PRODUCT_REPO/<file>` (e.g. `--catalog $HIL_PRODUCT_REPO/docs/bmcam_config_catalog.json`).
 
 ## 8. Tools
 
@@ -132,6 +136,8 @@ that need the staging admin token run ON the monitor host and read its env file 
 | `tools/hil_p0_probe.sh` | Sprint27 P0 rpicam limits probe (LADDER PART 1), outputs saved per probe |
 | `tools/hil_hardmode_cases.py` | generate the G3 edge-case table from `docs/bmcam_config_catalog.json` |
 | `tools/hil_plan_check.py` | run each case against `/remote-config/plan` (writes nothing) and score refused/accepted vs expected |
+| `tools/hil_step.sh` | one ladder step on a stay_on unit: command → one-shot trigger → wait → pull the capture evidence |
+| `tools/hil_change.sh` | one remote-config change through the backend on the console lane (record → publish → mark sent) |
 
 Origins: `hil_console.sh`, `hil_cmd.sh`, `hil_con_decode.py`, `hil_pistate.sh` are adapted
 copies of `runs/s5_console_20260928/*` (originals left in place).

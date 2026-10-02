@@ -17,6 +17,22 @@ what broke, what's next.*
 
 ---
 
+## 2026-10-02 — Sprint S0 — R1 `hil/` ported from bm_cam_legacy 7a867d9
+
+**Branch:** sprint/0-port-hil
+**Done:** Test Engineer reported `hil/` stable @ 7a867d9 (EM relay). Commit A: `git archive
+7a867d9 hil`, 20 files byte-checked against the source, `hil/hil.env` left out. Commit B:
+differences #1, #2, #5–#8 (repo name, logs/CSV tracked, `HIL_PRODUCT_REPO`, field-ops cites
+SPEC, steps.log + P0 header + two tool rows, HIL-ready item 7). DESIGN D10 + difference #9.
+Demo dry-run in the scratchpad: `hil_new_run.sh demo_port DEMO` → full run folder, manifest
+schema `hil_run_manifest/1`, re-run does not overwrite. Desk only; bm_cam_legacy read-only.
+**Broke/surprised us:** `hil/hil.env` is committed upstream despite its .gitignore (hosts/ids
+only, no secrets) — difference #9, tell the TE after R1. zsh expands `$B:h…` in
+`git show $B:hil/…` (`:h` modifier): write `"${B}:hil/…"`.
+**Next:** Nick runs the S0 demo; then S1 (pick the first handed-over test).
+
+---
+
 ## 2026-10-02 — Pre-work — SPEC Q1–Q4 answered by Nick
 
 **Branch:** sprint/0-open-questions

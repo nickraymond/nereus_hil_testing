@@ -9,7 +9,7 @@
 #           env HIL_UNIT_USER (pi); P0_DENOISE / P0_HDR (space-separated value lists, override
 #           the defaults below); P0_FLOATS_EXTRA (extra values to try on every float control).
 # Preconditions (the script REFUSES otherwise): no camera process on the unit (stop the runtime
-#           and disarm cron first: hil/procedures/P0_rpicam_probe.md).
+#           and disarm cron first: hil/procedures/TAKEOVER.md §2 and §5).
 # Outputs (in $2):
 #   00_env.txt            versions, CMA/mem, uname, camera list
 #   01_help_<app>.txt     full --help of rpicam-still / rpicam-vid (+ grep of the 6 options)
