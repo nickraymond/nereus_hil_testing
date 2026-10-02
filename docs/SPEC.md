@@ -1,7 +1,7 @@
 # SPEC.md — nereus_hil_testing
 
 *What Nick wants. Stable reference — agents skim this; changes require Nick's approval.*
-*Last updated: 2026-10-01*
+*Last updated: 2026-10-02*
 
 ## Goal
 
@@ -35,9 +35,10 @@ Source: bm_cam_legacy `hil/hil.env.example` and `hil/README.md` §6 @ ec2a449. V
 
 ## Safety / hard constraints (non-negotiable)
 
-1. **Desk sessions never touch hardware.** Only the session named bench owner (or Nick)
-   runs anything against nereus000, a Spotter or a unit. Everyone else asks the owner first.
-2. **One bench owner at a time**, recorded in the run's `gate.log`.
+1. **Desk sessions never touch hardware.** Only the bench owner runs anything against
+   nereus000, a Spotter or a unit. Everyone else asks the owner first.
+2. **One bench owner at a time**, recorded in the run's `gate.log`. After R1 the owner is a
+   standing Test Engineer session; Nick can take the bench back at any time (DESIGN D9).
 3. **Never send to a field Spotter or unit** (SPOT-33361C, bmcam001, bmcam002) from a HIL session.
 4. **Field-ops (from bm_cam_legacy CLAUDE.md §15/16):** check for running camera processes;
    back up crontab and config before any change and restore them after; write the restore
@@ -63,7 +64,10 @@ See TRACKER.md — every sprint ends with a live demo Nick can run.
 
 ## Open questions (flag, don't guess)
 
-- Q1. Port timing: after R1 ships (2026-10-09), or earlier if the Test Engineer calls `hil/` stable? (DESIGN D2)
-- Q2. Gate naming from R2 on: `R2_G1_<slug>.md` flat (recommended), or a release subfolder? (DESIGN differences #4)
-- Q3. HIL-ready item 7 "operator-runnable": adopt? (DESIGN D4)
-- Q4. Who is bench owner after R1: a standing Test Engineer session, or Nick by default?
+None open.
+
+Answered (Nick 2026-10-02):
+- Q1. Port timing → when the Test Engineer reports `hil/` stable (via the EM), even before 10/09 (DESIGN D6).
+- Q2. Gate naming from R2 on → flat, release prefix: `hil/gates/R2_G1_<slug>.md` (D7).
+- Q3. HIL-ready item 7 "operator-runnable" → adopted (D8).
+- Q4. Bench owner after R1 → a standing Test Engineer session (D9).
