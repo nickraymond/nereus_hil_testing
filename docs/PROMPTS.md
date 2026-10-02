@@ -51,3 +51,12 @@ Run /capture-task: <one-line description>. Size it, place it (current
 sprint / later sprint / icebox), show me the TRACKER diff, and then
 return to the current bite — do not start work on it.
 ```
+
+## 5 — Hand a test over (dev session → HIL)
+
+```
+Run /agent-entry. I want to hand <test> from <product repo> over for HIL.
+Write hil/tests/<test>.md against the HIL-ready checklist in docs/DESIGN.md
+(all 7 items), name any item you cannot fill, and open a PR. Do not touch
+the bench.
+```

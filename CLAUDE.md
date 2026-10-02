@@ -1,10 +1,10 @@
-# CLAUDE.md — {{PROJECT}}
+# CLAUDE.md — nereus_hil_testing
 
 ## Start here, every session
 
 This repo runs on the agent discipline in **docs/TRACKER.md**. Before any other
 work: run **/agent-entry** (or follow the Rules for Agents at the top of
-docs/TRACKER.md). Owner and approval gate: **{{OWNER}}**.
+docs/TRACKER.md). Owner and approval gate: **Nick**.
 
 Docs map — read per the ritual, don't skip it:
 
@@ -12,9 +12,10 @@ Docs map — read per the ritual, don't skip it:
 - `docs/TRACKER.md` — rules + sprint ladder (the entry point)
 - `docs/DESIGN.md` — as-built architecture + decision log
 - `docs/DEV_LOG.md` — session log, newest first
-- `docs/PROMPTS.md` — {{OWNER}}'s kickoff prompts
+- `docs/PROMPTS.md` — Nick's kickoff prompts
 
-Layout: <code dirs, one line>.
+Layout: `hil/` = HIL format, gates, tests, tools, templates · `runs/` = one evidence
+folder per run (RESULTS.md + run_manifest.json). Details: docs/DESIGN.md §Repo layout.
 
 ## Engineering values (apply to every bite)
 
@@ -30,7 +31,8 @@ Layout: <code dirs, one line>.
 5. **One variable at a time.** Record the known-good path before changing it.
 6. **Fail loudly and usefully.** Errors carry context and a recovery hint;
    partial failure never destroys good data.
-7. <Project-specific runtime constraints — delete if none.>
+7. **Desk work never touches hardware.** Only the named bench owner (or Nick) runs
+   anything against nereus000, a Spotter or a unit — docs/SPEC.md §Safety.
 8. **Hard constraints in SPEC.md are absolute.**
 
 > Never trust a script just because it exits successfully. Trust the artifacts.
